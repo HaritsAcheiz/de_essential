@@ -1,10 +1,11 @@
-FROM ubuntu:latest
+FROM openjdk:11-jre-slim
+
+ENV JAVA_VERSION=11.0.16
 
 RUN sed -i -e "s|http://archive.ubuntu.com|http://jp.archive.ubuntu.com|g" /etc/apt/sources.list \
  && apt-get -qq update  \
  && DEBIAN_FRONTEND=noninteractive apt-get -qq install --no-install-recommends \
       sudo \
-      openjdk-8-jdk \
       curl \
       gnupg \
       procps \
@@ -27,11 +28,12 @@ RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
 
 USER $USERNAME
 
-ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+# ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+ENV JAVA_HOME=/usr/local/openjdk-11
 
 # Hadoop
 ARG HADOOP_VERSION=3.3.6
-ARG HADOOP_URL=https://www.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz
+ARG HADOOP_URL=https://dlcdn.apache.org/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz
 ENV HADOOP_HOME=/opt/hadoop
 
 RUN set -x \
@@ -51,7 +53,7 @@ ENV PATH=$HADOOP_HOME/sbin:$HADOOP_HOME/bin:$PATH
 ENV LD_LIBRARY_PATH=$HADOOP_HOME/lib/native:$LD_LIBRARY_PATH
 
 # Spark
-ARG SPARK_VERSION=3.5.0
+ARG SPARK_VERSION=3.5.3
 ARG SPARK_URL=https://dlcdn.apache.org/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop3.tgz
 ENV SPARK_HOME=/opt/spark
 RUN set -x \

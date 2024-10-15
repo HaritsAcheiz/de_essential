@@ -1,6 +1,6 @@
 services:
   metastore:
-    image: postgres:11
+    image: postgres:15
     hostname: metastore
     environment:
       POSTGRES_PASSWORD: jupyter
